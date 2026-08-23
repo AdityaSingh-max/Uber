@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import socket from "socket.io-client";
+
 import {
   LoadScript,
   GoogleMap,
   Marker,
 } from "@react-google-maps/api";
-import socket from "../socket";
 
 const containerStyle = {
   width: "100%",
