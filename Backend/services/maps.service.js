@@ -1,4 +1,5 @@
 const axios = require('axios');
+const captainModel = require('../models/captain.model')
 
 module.exports.getAddressCoordinates = async (address) => { 
     const apiKey = process.env.GOOGLE_MAP_API; // Ensure you have your API key in environment variables
@@ -6,8 +7,8 @@ module.exports.getAddressCoordinates = async (address) => {
     
     try {
         const response = await axios.get(url);
-        const { lat, lng } = response.data.results[0].geometry.location;
-        return { lat, lng };
+        const { ltd, lng } = response.data.results[0].geometry.location;
+        return { ltd, lng };
     } catch (error) {
         console.error('Error fetching address coordinates:', error);
         throw new Error('Failed to fetch address coordinates');
@@ -56,3 +57,15 @@ module.exports.getSuggestions = async (input) => {
         throw new Error('Failed to fetch suggestions');
     }
 }    
+
+
+module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) =>{
+    const captains = await captainModel.find({
+        locations: {
+            $geoWithin: {
+                $centerSphere: [[ltd,lng], radius/6371]   
+            }
+        }
+    });
+    return captains;
+}
